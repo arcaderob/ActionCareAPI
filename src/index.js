@@ -5,6 +5,36 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
+const sqlite3 = require('sqlite3').verbose();
+
+let db = new sqlite3.Database('./Aculert', (err) => {
+    if (err) {
+        return console.error(err.message);
+    }
+
+    console.log('Connected to the in-memory SQlite database.');
+});
+
+const admin = () => {
+    db.serialize(() => {
+        db.each("SELECT * FROM `Users`", (err, row) => {
+            if (err) {
+                console.log('ERROR SELECTING DATA');
+                console.log(err);
+                return;
+            }
+    
+            console.log(row.ID);
+        });
+    });
+};
+
+const closeDb = () => db.close((err) => {
+    if (err) {
+      return console.error(err.message);
+    }
+    console.log('Close the database connection.');
+  });
 
 // defining the Express app
 const app = express();
@@ -24,6 +54,12 @@ app.use(cors());
 
 // adding morgan to log HTTP requests
 app.use(morgan('combined'));
+
+// Testing getting the admin
+app.get('/admin', (req, res) => {
+    admin();
+    res.send('Blah');
+});
 
 // defining an endpoint to return all ads
 app.get('/', (req, res) => {
