@@ -6,8 +6,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
 
-// controllers
-const login = require('./controllers/Login');
+const { createTask, fetchTasks } = require('../src/controllers/Tasks');
 
 // defining the Express app
 const app = express();
@@ -27,20 +26,19 @@ app.use(morgan('combined'));
 // enabling CORS for all requests
 app.use(cors());
 
-// Testing getting the admin
-app.get('/admin', (req, res) => {
-    admin();
-    res.send('Blah');
+app.post('/task', async (req, res) => {
+  const result = await createTask(req.body);
+  res.send({result});
+});
+
+app.get('/tasks', async (req, res) => {
+  const results = await fetchTasks(req.query.email)
+  res.send(results);
 });
 
 // defining an endpoint to return all ads
 app.get('/', (req, res) => {
-  res.send(ads);
-});
-
-app.post('/login', async (req, res) => {
-  const response = await login.login({username: req.body.firstname, password: req.body.password});
-  res.send(response);
+  res.send('404');
 });
 
 // starting the server
