@@ -14,8 +14,36 @@ const createTask = ({taskData}) => {
             if (error) throw error;
 
             resolve(results[0]);
-        })
-    );
+        }
+    ));
+};
+
+const deleteTask = (data) => {
+    return new Promise((resolve) => connection.query(
+        `SELECT * from tasks WHERE email='${data.email}' AND datetime='${data.item.split('at')[1].trim()}';`,
+            (error, results) => {
+                if (error) throw error;
+
+                // if it is a daily task, we don't want to delete it
+                if (results[0].daily[0]) {
+                    connection.query(`UPDATE tasks SET completed='${data.deleteTime}' WHERE email='${data.email}' AND datetime='${data.item.split('at')[1].trim()}';`,
+                        (innerError, innerResults) => {
+                            if (innerError) throw innerError;
+
+                            resolve(innerResults[0]);
+                        }
+                    );
+                } else {
+                    connection.query(`DELETE FROM tasks WHERE email='${data.email}' AND datetime='${data.item.split('at')[1].trim()}';`,
+                        (innerError, innerResults) => {
+                            if (innerError) throw innerError;
+
+                            resolve(innerResults[0]);
+                        }
+                    );
+                }
+            }
+    ));
 };
 
 const fetchTasks = (email) => {
@@ -31,5 +59,6 @@ const fetchTasks = (email) => {
 
 module.exports = {
     createTask,
+    deleteTask,
     fetchTasks
 };

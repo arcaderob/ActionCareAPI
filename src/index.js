@@ -6,7 +6,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
 
-const { createTask, fetchTasks } = require('../src/controllers/Tasks');
+const { createTask, deleteTask, fetchTasks } = require('../src/controllers/Tasks');
 
 // defining the Express app
 const app = express();
@@ -34,6 +34,11 @@ app.post('/task', async (req, res) => {
 app.get('/tasks', async (req, res) => {
   const results = await fetchTasks(req.query.email)
   res.send(results);
+});
+
+app.post('/deleteTask', async (req, res) => {
+  const result = await deleteTask(req.body);
+  res.send(result);
 });
 
 // defining an endpoint to return all ads
