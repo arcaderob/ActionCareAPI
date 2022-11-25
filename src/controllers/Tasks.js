@@ -1,4 +1,7 @@
 const mysql = require('mysql');
+const dayjs = require('dayjs');
+const relativeTime = require('dayjs/plugin/relativeTime');
+dayjs.extend(relativeTime);
 
 const connection = mysql.createConnection({
     host     : 'localhost',
@@ -46,13 +49,21 @@ const deleteTask = (data) => {
     ));
 };
 
+// need to check if completed is before the current time
+const _isNotCompletedForToday = (item) => item.completed === null || dayjs(item.completed).fromNow(dayjs()).indexOf('day') !== -1;
+
+const _filterOutCompletedTasks = (tasks) => tasks.filter((item) => {
+    if (!item.daily[0]) return item;
+    if (item.daily[0] && _isNotCompletedForToday(item)) return item;
+});
+
 const fetchTasks = (email) => {
     return new Promise((resolve) => connection.query(
         `SELECT * from tasks where email='${email}'`,
         (error, results) => {
             if (error) throw error;
 
-            resolve(results);
+            resolve(_filterOutCompletedTasks(results));
         }
     ));
 };
