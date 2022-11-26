@@ -18,12 +18,24 @@ const createSubscriber = ({data}) => {
             (innerError, innerResults) => {
                 if (innerError) throw innerError;
 
-                resolve(innerResults[0])
+                resolve(innerResults[0]);
             });
         });
     });
 };
 
+const fetchSubscribers = (email) => {
+    return new Promise((resolve) => {
+        connection.query(`SELECT * FROM subscriptions WHERE patientEmail='${email}'`,
+        (error, results) => {
+            if (error) throw error;
+
+            resolve(results);
+        });
+    })
+};
+
 module.exports = {
-    createSubscriber
+    createSubscriber,
+    fetchSubscribers
 };

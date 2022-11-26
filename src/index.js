@@ -7,7 +7,7 @@ const morgan = require('morgan');
 
 const { createTask, deleteTask, fetchTasks } = require('../src/controllers/Tasks');
 const { startCronJob } = require('../src/controllers/CronJob');
-const { createSubscriber } = require('../src/controllers/Subscribers');
+const { createSubscriber, fetchSubscribers } = require('../src/controllers/Subscribers');
 
 // defining the Express app
 const app = express();
@@ -40,6 +40,11 @@ app.post('/deleteTask', async (req, res) => {
 app.post('/subscriber', async (req, res) => {
   const result = await createSubscriber(req.body);
   res.send(result);
+});
+
+app.get('/subscribers', async (req, res) => {
+  const results = await fetchSubscribers(req.query.email);
+  res.send(results);
 });
 
 app.get('/', (req, res) => {
