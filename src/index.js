@@ -37,7 +37,7 @@ app.post('/deleteTask', async (req, res) => {
   res.send(result);
 });
 
-app.post('/subscriber', async () => {
+app.post('/subscriber', async (req, res) => {
   const result = await createSubscriber(req.body);
   res.send(result);
 });
