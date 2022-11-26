@@ -35,7 +35,19 @@ const fetchSubscribers = (email) => {
     })
 };
 
+const deleteSubscriber = (data) => {
+    return new Promise((resolve) => {
+        connection.query(`DELETE FROM subscriptions WHERE patientEmail='${data.patient}' AND subscriberEmail='${data.subscriber}'`,
+        (error, results) => {
+            if (error) throw error;
+
+            resolve(results);
+        });
+    });
+};
+
 module.exports = {
     createSubscriber,
-    fetchSubscribers
+    fetchSubscribers,
+    deleteSubscriber
 };
