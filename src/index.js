@@ -1,11 +1,12 @@
-// ./src/index.js
 // importing the dependencies
+// ./src/index.js
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
 
 const { createTask, deleteTask, fetchTasks } = require('../src/controllers/Tasks');
+const { startCronJob } = require('../src/controllers/CronJob');
 
 // defining the Express app
 const app = express();
@@ -43,3 +44,5 @@ app.get('/', (req, res) => {
 app.listen(3001, () => {
   console.log('listening on port 3001');
 });
+
+startCronJob();
