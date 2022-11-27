@@ -5,7 +5,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
 
-const { createTask, deleteTask, fetchTasks } = require('../src/controllers/Tasks');
+const { createTask, deleteTask, fetchTasks, fetchSubTasks } = require('../src/controllers/Tasks');
 const { startCronJob } = require('../src/controllers/CronJob');
 const { createSubscriber, fetchSubscribers, deleteSubscriber } = require('../src/controllers/Subscribers');
 
@@ -29,6 +29,11 @@ app.post('/task', async (req, res) => {
 
 app.get('/tasks', async (req, res) => {
   const results = await fetchTasks(req.query.email);
+  res.send(results);
+});
+
+app.get('/subTasks', async (req, res) => {
+  const results = await fetchSubTasks(req.query.email);
   res.send(results);
 });
 

@@ -29,7 +29,7 @@ const deleteTask = (data) => {
 
                 // if it is a daily task, we don't want to delete it
                 if (results[0].daily[0]) {
-                    connection.query(`UPDATE tasks SET completed='${data.deleteTime}' WHERE email='${data.email}' AND datetime='${data.item.split('at')[1].trim()}';`,
+                    connection.query(`UPDATE tasks SET completed='${data.deleteTime}', notification_sent=false WHERE email='${data.email}' AND datetime='${data.item.split('at')[1].trim()}';`,
                         (innerError, innerResults) => {
                             if (innerError) throw innerError;
 
@@ -68,8 +68,22 @@ const fetchTasks = (email) => {
     ));
 };
 
+const fetchSubTasks = (email) => {
+    return new Promise((resolve) => {
+        connection.query(`SELECT * FROM subscriptions WHERE subscriberEmail='${email}'`,
+            async (error, results) => {
+                if (error) throw error;
+
+                const tasks = await fetchTasks(results[0].patientEmail);
+                resolve(tasks);
+            }
+        )
+    });
+};
+
 module.exports = {
     createTask,
     deleteTask,
-    fetchTasks
+    fetchTasks,
+    fetchSubTasks
 };

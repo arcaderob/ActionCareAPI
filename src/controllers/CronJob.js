@@ -24,6 +24,13 @@ const _sendPushNotifications = (emails, task, time) => {
             })
             .then((resp) => {
                 console.log('Notification Sent', resp);
+                connection.query(`UPDATE tasks SET notification_sent=true WHERE task='${task}'`,
+                    (error, _) => {
+                        if (error) throw error;
+
+                        console.log('Notification sent updated');
+                    }
+                );
             })
             .catch((e) => {
                 console.log('There is an axios error');
