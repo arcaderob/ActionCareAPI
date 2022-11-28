@@ -10,7 +10,7 @@ const connection = mysql.createConnection({
     database : 'actioncare'
 });
 
-const _formatDate = (date = new Date()) => dayjs(date).format('YYYY-MM-DDTHH:mm:ss.000[Z]');
+const _formatDate = (date = new Date()) => dayjs(date).format('YYYY-MM-DDTHH:mm:ss');
 const _getTaskTime = (date) => dayjs(date).format('HH:mm');
 
 const _sendPushNotifications = (emails, task, time) => {
